@@ -1,16 +1,15 @@
 import React, { useState } from "react";
-import {Link, useHistory} from "react-router-dom"
-import { v4 as uuid } from 'uuid';
 
 
-function PostForm({addPost, post}) {
+
+function PostForm({post, save, cancel}) {
    
     const [data, setData] = useState({
         title: post.title,
         description: post.description,
         body: post.body
     });
-    const history = useHistory()
+    
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -19,8 +18,7 @@ function PostForm({addPost, post}) {
 
     const handleSubmit = (e) => {
         e.preventDefault()
-        addPost({id: uuid(), ...data})
-        history.push("/")
+        save(data)
     }
     return (
         <div className="container">
@@ -64,7 +62,7 @@ function PostForm({addPost, post}) {
                     Save
                 </button>
             </form>
-            <Link to="/" className="btn btn-secondary">Cancel</Link>
+            <button className="btn btn-secondary" onClick={cancel}>Cancel</button>
         </div>
     );
 }

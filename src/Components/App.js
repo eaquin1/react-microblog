@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {Route, Switch, Redirect} from "react-router-dom"
 import './App.css';
 import Jumbotron from "./Jumbotron"
-import PostForm from "./PostForm"
+import NewPost from "./NewPost"
 import Home from "./Home"
 import Post from "./Post"
 
@@ -22,10 +22,10 @@ console.log(blogPost)
     <Jumbotron />
     <Switch>
       <Route exact path="/new">
-        <PostForm addPost={addPost}/>
+        <NewPost addPost={addPost}/>
       </Route>
       <Route exact path="/:postId">
-        <Post blogs={blogPost}/>
+        <Post blogs={blogPost} addPost={addPost}/>
       </Route>
       <Route exact path="/">
         <Home blogs={blogPost} addPost={addPost}/>
