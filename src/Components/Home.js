@@ -1,7 +1,7 @@
 import React from "react";
 import {Link} from "react-router-dom"
 function Home({ blogs }) {
-    console.log(blogs);
+    
     let postList = blogs.map((p) => (
         <div key={p.id}>
             <Link to={p.id}><h4>{p.title}</h4></Link>

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 import PostForm from "./PostForm";
-function Post({ blogs, addPost }) {
+function Post({ blogs, editPost }) {
     const { postId } = useParams();
     /** Get the correct post */
     const thisBlog = blogs.filter((blog) => blog.id === postId);
@@ -13,7 +13,7 @@ function Post({ blogs, addPost }) {
     };
 
     const edit = ({ title, description, body }) => {
-        addPost({ title: title, description: description, body: body });
+        editPost({ id: thisBlog[0].id, title: title, description: description, body: body });
 
         toggleEdit();
     };
@@ -21,7 +21,7 @@ function Post({ blogs, addPost }) {
     return (
         <div className="container">
             {isEditing ? (
-                <PostForm post={thisBlog} save={edit} cancel={toggleEdit} />
+                <PostForm post={thisBlog[0]} save={edit} cancel={toggleEdit} />
             ) : (
                 <>
                     <h4>{thisBlog[0].title}</h4>

@@ -24,3 +24,11 @@ function NewPost({addPost}) {
 }
 
 export default NewPost
+// let arr = [{
+// body: "sss",
+// description: "Purple flowers out your window",
+// id: "ac60ed83-18c8-46b7-a027-be8d4fd426a0",
+// title: "Rosaphine"}, {body: "sadfadsfdsafdasfadsfsdf",
+// description: "Yellow",
+// id: "be8d4fd426a0",
+// title: "Gini"}]

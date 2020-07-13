@@ -33,6 +33,7 @@ function PostForm({post, save, cancel}) {
                         name="title"
                         value={data.title}
                         onChange={handleChange}
+                        placeholder={data.title}
                     />
                 </div>
                 <div className="form-group">
