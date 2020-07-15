@@ -1,7 +1,7 @@
 import React from "react"
-import Comment from "./CommentForm"
+import Comment from "./Comment"
 
-function CommentList({comments=[]}){
+function CommentList({comments=[], deleteComment}){
     console.log(comments)
     return (
         
@@ -9,7 +9,8 @@ function CommentList({comments=[]}){
             <Comment 
                 key={Object.keys(c)[0]}
                 id={Object.keys(c)[0]}
-                text={Object.values(c)}
+                text={Object.values(c)[0]}
+                deleteComment = {deleteComment}
                 />
         ))
     )

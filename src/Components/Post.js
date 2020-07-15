@@ -1,68 +1,79 @@
 import React, { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useHistory } from "react-router-dom";
 import PostForm from "./PostForm";
 import CommentForm from "./CommentForm";
-function Post({ blogs, editPost }) {
+import CommentList from "./CommentList"
+import {useSelector, useDispatch} from "react-redux";
+import {
+    updatePost,
+    removePost,
+    addComment,
+    removeComment
+} from "../actions/posts";
+import { v4 as uuid } from "uuid";
+
+function Post() {
     const { postId } = useParams();
     /** Get the correct post */
-    const thisBlog = blogs.filter((blog) => blog.id === postId);
+    const blogPost = useSelector(state => state.posts.filter((blog) => blog.id === postId))
+    const history = useHistory();
+    const dispatch = useDispatch();
+    
+    // const thisBlog = blogs.filter((blog) => blog.id === postId);
     const [isEditing, setIsEditing] = useState(false);
-    const [comments, setComments] = useState("");
+    //const [comments, setComments] = useState("");
     /** Toggle editing on/off */
     const toggleEdit = () => {
         setIsEditing((edit) => !edit);
     };
 
     const edit = ({ title, description, body }) => {
-        editPost({
-            id: thisBlog[0].id,
+        dispatch(updatePost({
+            id: blogPost[0].id,
             title: title,
             description: description,
             body: body,
-        });
+        }));
 
         toggleEdit();
     };
 
-    const addComment = (comment) => {
-        setComments((c) => [...c, comment]);
+    const deletePost = () => {
+        dispatch(removePost(postId))
+        history.push("/")
+    }
+
+    const newComment = (comment) => {
+        const id = uuid()
+        dispatch(addComment(postId, {[id]: comment}));
     };
 
-    const handleDelete = (c) => {
-    
-        const commentIdx = comments.indexOf(c)
-        const commentCopy = [...comments]
-        commentCopy.splice(commentIdx, 1)
-        setComments(commentCopy)
+    const deleteComment = (id) => {
+    dispatch(removeComment(postId, id))
+        // const commentIdx = comments.indexOf(c)
+        // const commentCopy = [...comments]
+        // commentCopy.splice(commentIdx, 1)
+        // setComments(commentCopy)
     }
     return (
         <div className="container">
             {isEditing ? (
-                <PostForm post={thisBlog[0]} save={edit} cancel={toggleEdit} />
+                <PostForm post={blogPost[0]} save={edit} cancel={toggleEdit} />
             ) : (
                 <>
-                    <h4>{thisBlog[0].title}</h4>
+                    <h3>{blogPost[0].title}</h3>
                     <i
                         className="fas fa-edit text-primary"
                         onClick={toggleEdit}
                     />
-                    <i className="fas fa-times text-danger" />
-                    <p>{thisBlog[0].description}</p>
-                    <p>{thisBlog[0].body}</p>
-                    {comments.length > 0
-                        ? comments.map((c) => (
-                              <div key={c}>
-                                  <p >{c}</p>
-                                  <i
-                                      className="fa fa-times text-danger mr-2"
-                                      onClick={() => handleDelete(c)}
-                                  />
-                              </div>
-                          ))
-                        : ""}
+                    <i className="fas fa-times text-danger" onClick={deletePost}/>
+                    <p>{blogPost[0].description}</p>
+                    <p>{blogPost[0].body}</p>
+                    <h4>Comments</h4>
                 </>
             )}
-            <CommentForm addComment={addComment} />
+            <CommentForm addComment={newComment} />
+            <CommentList comments={blogPost[0].comments} deleteComment={deleteComment}/>
         </div>
     );
 }

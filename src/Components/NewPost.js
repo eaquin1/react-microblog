@@ -1,18 +1,29 @@
-import React from "react"
-import PostForm from "./PostForm"
-import {useHistory} from "react-router-dom"
-import { v4 as uuid } from 'uuid';
-function NewPost({addPost}) {
-    const history = useHistory()
+import React from "react";
+import PostForm from "./PostForm";
+import { useHistory } from "react-router-dom";
+import { v4 as uuid } from "uuid";
+import { addPost } from "../actions/posts";
+import { useDispatch } from "react-redux";
 
-    /**Adds post and sends it to parent (App.js) state */
-    function add({title, description, body}) {
-        addPost({id: uuid(), title: title, description: description, body: body
-        })
-        history.push("/")
+function NewPost() {
+    const history = useHistory();
+    const dispatch = useDispatch();
+
+    /**Adds post and sends it to redux state */
+   const add = ({ title, description, body })=> {
+        const id = uuid()
+    dispatch(addPost({
+                id: id, 
+                title: title,
+                description: description,
+                body: body
+                }
+            )
+        );
+        history.push("/");
     }
     function cancel() {
-        history.push("/")
+        history.push("/");
     }
 
     return (
@@ -20,10 +31,10 @@ function NewPost({addPost}) {
             <h1>New Post</h1>
             <PostForm save={add} cancel={cancel} />
         </main>
-    )
+    );
 }
 
-export default NewPost
+export default NewPost;
 // let arr = [{
 // body: "sss",
 // description: "Purple flowers out your window",
