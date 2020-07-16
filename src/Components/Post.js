@@ -9,7 +9,8 @@ import {
     updatePostInApi,
     sendCommentToApi,
     removeCommentFromApi,
-    removePostFromApi
+    removePostFromApi,
+    sendVoteToApi
 } from "../actions/posts";
 
 
@@ -64,6 +65,10 @@ function Post() {
         dispatch(removeCommentFromApi(postId, commentId))
     }
 
+    /* Handle voting */
+    const vote = (direction) => {
+        dispatch(sendVoteToApi(postId, direction))
+    }
     if(!post) return <p>Loading</p>;
 
     return (
@@ -80,6 +85,11 @@ function Post() {
                     <i className="fas fa-times text-danger" onClick={deletePost}/>
                     <p>{post.description}</p>
                     <p>{post.body}</p>
+                    <div>
+                        <b>{post.votes} votes:</b>
+                        <i className="fas fa-thumbs-up text-success" onClick={e => vote("up")} />
+                        <i className="fas fa-thumbs-down text-danger" onClick={e => vote("down")} />
+                    </div>
                     <h4>Comments</h4>
                 </>
             )} 

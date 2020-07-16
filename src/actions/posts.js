@@ -6,7 +6,8 @@ import {
     ADD_POST,
     UPDATE_POST,
     ADD_COMMENT,
-    REMOVE_COMMENT
+    REMOVE_COMMENT,
+    VOTE
 } from "./types"
 
 const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000/api/posts";
@@ -106,4 +107,18 @@ function removeComment(postId, commentId) {
         postId,
         commentId
     }
+}
+export function sendVoteToApi(id, direction) {
+    return async function(dispatch){
+        const response = await axios.post(`${API_URL}/${id}/vote/${direction}`)
+        return dispatch(vote(id, response.data.votes))
+    }
+
+function vote(postId, votes) {
+    return {
+        type: VOTE,
+        postId: postId,
+        votes: votes
+    }
+}
 }

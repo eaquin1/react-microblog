@@ -2,6 +2,7 @@ import React, {useEffect, useState} from "react";
 import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchTitlesFromApi } from "../actions/titles";
+import { sendVoteToApi} from "../actions/posts"
 
 function TitleList() {
 
@@ -10,7 +11,7 @@ function TitleList() {
     const [isLoading, setIsLoading] = useState(true)
     useEffect(function() {
         async function fetchTitle() {
-            await dispatch(fetchTitlesFromApi());
+            dispatch(fetchTitlesFromApi());
             setIsLoading(false)
         }
 
@@ -18,6 +19,10 @@ function TitleList() {
             fetchTitle()
         }
     }, [dispatch, isLoading])
+
+    const vote = (direction, id) => {
+        dispatch(sendVoteToApi(id, direction))
+    }
 
     if(isLoading) return <b>Loading</b>;
 
@@ -32,6 +37,13 @@ function TitleList() {
                     <Link to={"/" + b.id}>{b.title}</Link>
                 </div>
                 <div className="card-text">{b.description}</div>
+            </div>
+            <div className="card-footer">
+                <small>{b.votes} votes</small>
+                <i className="fas fa-thumbs-up text-success ml-2"
+                onClick={e =>vote("up", b.id)} />
+                <i className="fas fa-thumbs-down text-danger ml-2"
+                onClick={e => vote("down", b.id)} />
             </div>
         </div>
     ));

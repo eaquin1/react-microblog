@@ -7,20 +7,6 @@ import Home from "./Home";
 import Post from "./Post";
 
 function App() {
-    // const [blogPost, setBlogPost] = useState([]);
-    // console.log(blogPost);
-    // const addPost = (post) => {
-    //     setBlogPost((d) => [...d, post]);
-    // };
-
-    // const editPost = (post) => {
-    //     const matchingId = (id) => id.id === post.id;
-    //     const editedPostIdx = blogPost.findIndex(matchingId);
-    //     const postCopy = [...blogPost];
-    //     postCopy.splice(editedPostIdx, 1, post);
-
-    //     setBlogPost(postCopy);
-    // };
 
     return (
         <>
