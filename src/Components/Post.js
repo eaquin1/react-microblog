@@ -1,81 +1,88 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams, useHistory } from "react-router-dom";
 import PostForm from "./PostForm";
 import CommentForm from "./CommentForm";
 import CommentList from "./CommentList"
 import {useSelector, useDispatch} from "react-redux";
 import {
-    updatePost,
-    removePost,
-    addComment,
-    removeComment
+    getPostFromApi,
+    updatePostInApi,
+    sendCommentToApi,
+    removeCommentFromApi,
+    removePostFromApi
 } from "../actions/posts";
-import { v4 as uuid } from "uuid";
+
 
 function Post() {
-    const { postId } = useParams();
-    /** Get the correct post */
-    const blogPost = useSelector(state => state.posts.filter((blog) => blog.id === postId))
+    const postId = Number(useParams().postId);
     const history = useHistory();
     const dispatch = useDispatch();
-    
-    // const thisBlog = blogs.filter((blog) => blog.id === postId);
+    const post =useSelector(state => state.posts[postId])
     const [isEditing, setIsEditing] = useState(false);
-    //const [comments, setComments] = useState("");
-    /** Toggle editing on/off */
+
+    useEffect(function loadPost() {
+        async function getPost() {
+            dispatch(getPostFromApi(postId))
+        }
+        if (!post) {
+            getPost()
+        }
+    }, [dispatch, postId, post])
+    console.log(postId)
+    console.log(post)
+    
+   
+    
+    // //const [comments, setComments] = useState("");
+    // /** Toggle editing on/off */
     const toggleEdit = () => {
         setIsEditing((edit) => !edit);
     };
 
     const edit = ({ title, description, body }) => {
-        dispatch(updatePost({
-            id: blogPost[0].id,
-            title: title,
-            description: description,
-            body: body,
+        dispatch(updatePostInApi({
+            postId,
+            title,
+            description,
+            body
         }));
 
         toggleEdit();
     };
 
     const deletePost = () => {
-        dispatch(removePost(postId))
+        dispatch(removePostFromApi(postId))
         history.push("/")
     }
 
-    const newComment = (comment) => {
-        const id = uuid()
-        dispatch(addComment(postId, {[id]: comment}));
+    const newComment = (text) => {
+        dispatch(sendCommentToApi(postId, text));
     };
 
-    const deleteComment = (id) => {
-    dispatch(removeComment(postId, id))
-        // const commentIdx = comments.indexOf(c)
-        // const commentCopy = [...comments]
-        // commentCopy.splice(commentIdx, 1)
-        // setComments(commentCopy)
+    const deleteComment = (commentId) => {
+        dispatch(removeCommentFromApi(postId, commentId))
     }
     return (
         <div className="container">
             {isEditing ? (
-                <PostForm post={blogPost[0]} save={edit} cancel={toggleEdit} />
+                <PostForm post={post} save={edit} cancel={toggleEdit} />
             ) : (
                 <>
-                    <h3>{blogPost[0].title}</h3>
+                    <h3>{post.title}</h3>
                     <i
                         className="fas fa-edit text-primary"
-                        onClick={toggleEdit}
+                        // onClick={toggleEdit}
                     />
                     <i className="fas fa-times text-danger" onClick={deletePost}/>
-                    <p>{blogPost[0].description}</p>
-                    <p>{blogPost[0].body}</p>
+                    <p>{post.description}</p>
+                    <p>{post.body}</p>
                     <h4>Comments</h4>
                 </>
-            )}
-            <CommentForm addComment={newComment} />
-            <CommentList comments={blogPost[0].comments} deleteComment={deleteComment}/>
+            )} 
+           <CommentForm addComment={newComment} />
+           <CommentList comments={post.comments} deleteComment={deleteComment}/> 
         </div>
-    );
+     );
 }
 
 export default Post;

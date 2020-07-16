@@ -1,13 +1,31 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import { Link } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { fetchTitlesFromApi } from "../actions/titles";
 
 function TitleList() {
 
-    const blogPosts = useSelector((store) => store.posts);
-    
-    
-    let list = blogPosts.map((b) => (
+    const titles= useSelector((store) => store.titles);
+    const dispatch = useDispatch();
+    const [isLoading, setIsLoading] = useState(true)
+    useEffect(function() {
+        async function fetchTitle() {
+            await dispatch(fetchTitlesFromApi());
+            setIsLoading(false)
+        }
+
+        if(isLoading) {
+            fetchTitle()
+        }
+    }, [dispatch, isLoading])
+
+    if(isLoading) return <b>Loading</b>;
+
+    if(!isLoading && titles.length === 0){
+        return <b>Please add a post!</b>
+    }
+
+    let list = titles.map((b) => (
         <div className="card" key={b.id}>
             <div className="card-body">
                 <div className="card-title text-center">
