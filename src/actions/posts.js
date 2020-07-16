@@ -13,6 +13,7 @@ const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000/api/post
 
 export function getPostFromApi(id) {
     return async function(dispatch) {
+        console.log(id)
         const response = await axios.get(`${API_URL}/${id}`);
         return dispatch(getPost(response.data))
     }
@@ -44,6 +45,8 @@ function addPost(post) {
 }
 export function updatePostInApi(id, title, description, body) {
     return async function(dispatch){
+        console.log(id)
+        console.log(title)
         const response = await axios.put(`${API_URL}/${id}`, {
             title,
             description,

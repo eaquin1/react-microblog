@@ -14,22 +14,22 @@ import {
 
 
 function Post() {
+    const [isEditing, setIsEditing] = useState(false);
     const postId = Number(useParams().postId);
     const history = useHistory();
+    const post = useSelector(st => st.posts[postId]);
     const dispatch = useDispatch();
-    const post =useSelector(state => state.posts[postId])
-    const [isEditing, setIsEditing] = useState(false);
-
-    useEffect(function loadPost() {
-        async function getPost() {
-            dispatch(getPostFromApi(postId))
-        }
-        if (!post) {
-            getPost()
-        }
-    }, [dispatch, postId, post])
-    console.log(postId)
-    console.log(post)
+  
+    /** If we don't have the post, request it from API. */
+  
+    useEffect(function loadPostWhenPostOrIdChanges() {
+      async function getPost() {
+        dispatch(getPostFromApi(postId));
+      }
+      if (!post) {
+        getPost();
+      }
+    }, [dispatch, postId, post]);
     
    
     
@@ -40,12 +40,13 @@ function Post() {
     };
 
     const edit = ({ title, description, body }) => {
-        dispatch(updatePostInApi({
+        console.log(postId)
+        dispatch(updatePostInApi(
             postId,
             title,
             description,
             body
-        }));
+        ));
 
         toggleEdit();
     };
@@ -62,6 +63,9 @@ function Post() {
     const deleteComment = (commentId) => {
         dispatch(removeCommentFromApi(postId, commentId))
     }
+
+    if(!post) return <p>Loading</p>;
+
     return (
         <div className="container">
             {isEditing ? (
@@ -71,7 +75,7 @@ function Post() {
                     <h3>{post.title}</h3>
                     <i
                         className="fas fa-edit text-primary"
-                        // onClick={toggleEdit}
+                        onClick={toggleEdit}
                     />
                     <i className="fas fa-times text-danger" onClick={deletePost}/>
                     <p>{post.description}</p>
@@ -79,6 +83,7 @@ function Post() {
                     <h4>Comments</h4>
                 </>
             )} 
+            <hr></hr>
            <CommentForm addComment={newComment} />
            <CommentList comments={post.comments} deleteComment={deleteComment}/> 
         </div>
